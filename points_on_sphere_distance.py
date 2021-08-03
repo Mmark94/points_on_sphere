@@ -12,14 +12,7 @@ def distance_two_points(P1_xyz, P2_xyz):
     distance = math.sqrt(X_dis + Y_dis + Z_dis)
     return distance
 
-def Points_on_sphere_with_distance(points=500, DISTANCE=0.15, Discarded=False, wireframe=True, Show=True, GIF=True, debug=False):
-    # This draws the wireframe of a sphere
-    phi = np.linspace(0, np.pi, 20)
-    theta = np.linspace(0, 2 * np.pi, 40)
-    x = np.outer(np.sin(theta), np.cos(phi))
-    y = np.outer(np.sin(theta), np.sin(phi))
-    z = np.outer(np.cos(theta), np.ones_like(phi))
-
+def generate_distanced_points_on_sphere(points=500, DISTANCE=0.15, debug=False):
     # We store the coordinates of the points in these lists
     x_list = []
     y_list = []
@@ -68,16 +61,39 @@ def Points_on_sphere_with_distance(points=500, DISTANCE=0.15, Discarded=False, w
             print(i, x_list[i], y_list[i], z_list[i])
     print("points on the sphere =", len(x_list))
 
+    return x_list, y_list, z_list, x_list_discard, y_list_discard, z_list_discard
+
+def Points_on_sphere_with_distance(points=500, DISTANCE=0.15, Discarded=False, wireframe=True, plot_surface=False, Show=True, GIF=True, debug=False):
+    # This draws the wireframe of a sphere
+    phi = np.linspace(0, np.pi, 20)
+    theta = np.linspace(0, 2 * np.pi, 40)
+    x = np.outer(np.sin(theta), np.cos(phi))
+    y = np.outer(np.sin(theta), np.sin(phi))
+    z = np.outer(np.cos(theta), np.ones_like(phi))
+
+    # We store the coordinates of the points in these lists
+    # Some points are discarded because they are too close to other points
+    x_list, y_list, z_list, x_list_discard, y_list_discard, z_list_discard = generate_distanced_points_on_sphere(points=points, DISTANCE=DISTANCE, debug=debug)
+
+    # Use these other points if you want to plot several set of points
+    #x_list2, y_list2, z_list2, x_list_discard, y_list_discard, z_list_discard = generate_distanced_points_on_sphere(points=points, DISTANCE=0.35, debug=debug)
+    #x_list3, y_list3, z_list3, x_list_discard, y_list_discard, z_list_discard = generate_distanced_points_on_sphere(points=points, DISTANCE=0.55, debug=debug)
+
     # Plot the data
     fig, ax = plt.subplots(1, 1, subplot_kw={'projection': '3d', 'aspect': 'auto'}, figsize=(14, 14))
     # Plot the wireframe of the sphere
     if wireframe:
-        ax.plot_wireframe(x, y, z, color='k', rstride=1, cstride=1)
+        ax.plot_wireframe(x, y, z, color='k', rstride=1, cstride=1, alpha=0.8, linewidth=0.8)
+    if plot_surface:
+        ax.plot_surface(x, y, z, color='white', rstride=1, cstride=1, alpha=0.4, linewidth=0.8) #shade=False
     # Plot the points
     ax.scatter(x_list, y_list, z_list, s=50, c='r', zorder=10)
     # Plot the discarded points with a different colour
     if Discarded:
         ax.scatter(x_list_discard, y_list_discard, z_list_discard, s=5, c='b', zorder=10)
+
+    # If you want to remove the axis
+    #ax.set_axis_off()
 
     # Create a random seed to save the image
     random_seed = str(random.random())[2:6]
@@ -98,4 +114,4 @@ def Points_on_sphere_with_distance(points=500, DISTANCE=0.15, Discarded=False, w
 
 # test the code
 if __name__ == "__main__":
-    Points_on_sphere_with_distance(points=3000, DISTANCE=0.35, Discarded=False, wireframe=False, Show=True, GIF=True, debug=False)
+    Points_on_sphere_with_distance(points=3000, DISTANCE=0.25, Discarded=False, wireframe=True, plot_surface=False, Show=True, GIF=True, debug=False)

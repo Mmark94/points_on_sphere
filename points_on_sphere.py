@@ -1,10 +1,11 @@
 from matplotlib import pyplot as plt
 from matplotlib import animation
+import mpl_toolkits.mplot3d.axes3d as axes3d
 import numpy as np
 import math
 import random
 
-def random_points_on_sphere(points=500, wireframe=True, Show=True, GIF=True):
+def random_points_on_sphere(points=500, wireframe=True, plot_surface=False, Show=True, GIF=True):
     # This draws the wireframe of a sphere
     phi = np.linspace(0, np.pi, 20)
     theta = np.linspace(0, 2 * np.pi, 40)
@@ -32,9 +33,14 @@ def random_points_on_sphere(points=500, wireframe=True, Show=True, GIF=True):
     fig, ax = plt.subplots(1, 1, subplot_kw={'projection': '3d', 'aspect': 'auto'}, figsize=(14, 14))
     # Plot the wireframe of the sphere
     if wireframe:
-        ax.plot_wireframe(x, y, z, color='k', rstride=1, cstride=1)
+        ax.plot_wireframe(x, y, z, color='k', rstride=1, cstride=1, alpha=0.8, linewidth=0.8)
+    if plot_surface:
+        ax.plot_surface(x, y, z, color='white', rstride=1, cstride=1, alpha=0.4, linewidth=0.8) #shade=False
     # Plot the points
     ax.scatter(x_list, y_list, z_list, s=30, c='r', zorder=10)
+
+    # If you want to remove the axis
+    #ax.set_axis_off()
 
     # Create a random seed to save the image
     random_seed = str(random.random())[2:6]
@@ -56,4 +62,4 @@ def random_points_on_sphere(points=500, wireframe=True, Show=True, GIF=True):
 # test the code
 if __name__ == "__main__":
 
-    random_points_on_sphere(points=500, wireframe=True, Show=True, GIF=False)
+    random_points_on_sphere(points=500, wireframe=True, plot_surface=False, Show=True, GIF=False)
