@@ -12,68 +12,90 @@ def distance_two_points(P1_xyz, P2_xyz):
     distance = math.sqrt(X_dis + Y_dis + Z_dis)
     return distance
 
-# This draws a sphere
-phi = np.linspace(0, np.pi, 20)
-theta = np.linspace(0, 2 * np.pi, 40)
-x = np.outer(np.sin(theta), np.cos(phi))
-y = np.outer(np.sin(theta), np.sin(phi))
-z = np.outer(np.cos(theta), np.ones_like(phi))
+def Points_on_sphere_with_distance(points=500, DISTANCE=0.15, Discarded=False, wireframe=True, Show=True, GIF=True, debug=False):
+    # This draws the wireframe of a sphere
+    phi = np.linspace(0, np.pi, 20)
+    theta = np.linspace(0, 2 * np.pi, 40)
+    x = np.outer(np.sin(theta), np.cos(phi))
+    y = np.outer(np.sin(theta), np.sin(phi))
+    z = np.outer(np.cos(theta), np.ones_like(phi))
 
+    # We store the coordinates of the points in these lists
+    x_list = []
+    y_list = []
+    z_list = []
+    # Some points are discarded because they are too close to other points
+    x_list_discard = []
+    y_list_discard = []
+    z_list_discard = []
 
-space = [-1, 1]
-points = 1000
+    for i in range(points):
+        # Pick random points
+        X = random.uniform(-1, 1)
+        Y = random.uniform(-1, 1)
+        Z = random.uniform(-1, 1)  # (0,1) generates points only in the Northern Hemisphere
 
-x_list = []
-y_list = []
-z_list = []
+        # This makes sure the points are on the surface of the sphere
+        Vector = (math.sqrt((X ** 2) + (Y ** 2) + (Z ** 2)))
+        X = X / Vector
+        Y = Y / Vector
+        Z = Z / Vector
 
-x_list_discard = []
-y_list_discard = []
-z_list_discard = []
+        ADD = True
+        for i in range(len(x_list)):
+            # This function calculates the 3D distance between two points: P1=[x1, y1, z1], P2=[x2, y2, z2]
+            Distance = distance_two_points([X, Y, Z], [x_list[i], y_list[i], z_list[i]])
+            if debug:
+                print("point1 =", X, Y, Z)
+                print("point2 =", x_list[i], y_list[i], z_list[i])
+                print(i, Distance)
+                print()
+            # If the Distance is smaller than decided the points are too close and they are discarded
+            if Distance < DISTANCE:
+                ADD = False
+                break
+        if ADD:
+            x_list.append(X)
+            y_list.append(Y)
+            z_list.append(Z)
+        else:
+            x_list_discard.append(X)
+            y_list_discard.append(Y)
+            z_list_discard.append(Z)
 
-for i in range(points):
-    X = random.uniform(-1, 1)
-    Y = random.uniform(-1, 1)
-    Z = random.uniform(-1, 1)        # (0,1) generates points only in the Northern Hemisphere
+    if debug:
+        for i in range(len(x_list)):
+            print(i, x_list[i], y_list[i], z_list[i])
+    print("points on the sphere =", len(x_list))
 
-    Vector = (math.sqrt((X**2) + (Y**2) + (Z**2)))
-    X = X / Vector
-    Y = Y / Vector
-    Z = Z / Vector
+    # Plot the data
+    fig, ax = plt.subplots(1, 1, subplot_kw={'projection': '3d', 'aspect': 'auto'}, figsize=(14, 14))
+    # Plot the wireframe of the sphere
+    if wireframe:
+        ax.plot_wireframe(x, y, z, color='k', rstride=1, cstride=1)
+    # Plot the points
+    ax.scatter(x_list, y_list, z_list, s=50, c='r', zorder=10)
+    # Plot the discarded points with a different colour
+    if Discarded:
+        ax.scatter(x_list_discard, y_list_discard, z_list_discard, s=5, c='b', zorder=10)
 
-    ADD = True
-    for i in range(len(x_list)):
-        Distance = distance_two_points([X, Y, Z], [x_list[i], y_list[i], z_list[i]])
-        #print("point1 =", X, Y, Z)
-        #print("point2 =", x_list[i], y_list[i], z_list[i])
-        #print(i, Distance)
-        #print()
-        if Distance < 0.15:
-            ADD = False
-            break
-    if ADD:
-        x_list.append(X)
-        y_list.append(Y)
-        z_list.append(Z)
-    else:
-        x_list_discard.append(X)
-        y_list_discard.append(Y)
-        z_list_discard.append(Z)
+    # Create a random seed to save the image
+    random_seed = str(random.random())[2:6]
 
-#for i in range(len(x_list)):
-#    print(i, x_list[i], y_list[i], z_list[i])
-print(len(x_list))
+    # Save plot
+    plt.savefig("media/Sphere_distance_points_" + str(points) + "_real_" + str(len(x_list)) + "_s" + random_seed + ".png", format='png', dpi=150)
+    if Show:
+        plt.show()
 
-fig, ax = plt.subplots(1, 1, subplot_kw={'projection':'3d', 'aspect':'auto'}, figsize=(14, 14))
-ax.plot_wireframe(x, y, z, color='k', rstride=1, cstride=1)
-ax.scatter(x_list, y_list, z_list, s=20, c='r', zorder=10)
-#ax.scatter(x_list_discard, y_list_discard, z_list_discard, s=20, c='b', zorder=10)
-plt.savefig("media/Sphere_distance_points_" + str(points) + "_real_" + str(len(x_list)) + ".png", format='png', dpi=150)
-plt.show()
+    def rotate(angle):
+        ax.view_init(azim=angle)
+    if GIF:
+        # rot_animation = animation.FuncAnimation(fig, rotate, frames=np.arange(0, 362, 2), interval=100)     # Smooth and slow, but it is 70MB
+        rot_animation = animation.FuncAnimation(fig, rotate, frames=np.arange(0, 362, 5), interval=200)  # Fast, it is 30MB
+        rot_animation.save("media_gif/Sphere_distance_points_" + str(points) + "_real_" + str(len(x_list)) + "_s" + random_seed + ".gif", dpi=150, writer="imagemagick")
+    plt.close()
+    return None
 
-
-def rotate(angle):
-    ax.view_init(azim=angle)
-
-rot_animation = animation.FuncAnimation(fig, rotate, frames=np.arange(0, 362, 2), interval=100)
-rot_animation.save("media_gif/Sphere_distance_points_" + str(points) + "_real_" + str(len(x_list)) + ".gif", dpi=150, writer="imagemagick")
+# test the code
+if __name__ == "__main__":
+    Points_on_sphere_with_distance(points=3000, DISTANCE=0.35, Discarded=False, wireframe=False, Show=True, GIF=True, debug=False)
