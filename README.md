@@ -30,5 +30,7 @@ without the axis
 ![sphere8](media/Sphere_distance_points_3000_real_126_s0524.png)
 without the axis and frame
 ![sphere9](media/Sphere_distance_points_3000_real_117_s1827.png)
-
 ![sphere10](media/Sphere_distance_points_3000_real_311_s8373.png)
+
+with very big points
+![sphere10](media/Sphere_distance_points_3000_real_40_s7342.png)
