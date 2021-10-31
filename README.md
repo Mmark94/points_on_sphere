@@ -34,3 +34,10 @@ without the axis and frame
 
 with very big points
 ![sphere10](media/Sphere_distance_points_3000_real_40_s7342.png)
+
+Fibonacci spirals points on a sphere.
+spiral_on_sphere.py
+
+![sphere11](media_f/Sphere_points_1000_s4841.png)
+
+![sphere12](media_f/Sphere_points_10000_s7766.png)
