@@ -63,7 +63,7 @@ def generate_distanced_points_on_sphere(points=500, DISTANCE=0.15, debug=False):
 
     return x_list, y_list, z_list, x_list_discard, y_list_discard, z_list_discard
 
-def Points_on_sphere_with_distance(points=500, DISTANCE=0.15, Discarded=False, wireframe=True, plot_surface=False, Show=True, GIF=True, debug=False):
+def Points_on_sphere_with_distance(points=500, DISTANCE=0.15, Discarded=False, wireframe=True, plot_surface=False, Axis=True, Show=True, GIF=True, debug=False):
     # This draws the wireframe of a sphere
     phi = np.linspace(0, np.pi, 20)
     theta = np.linspace(0, 2 * np.pi, 40)
@@ -93,7 +93,8 @@ def Points_on_sphere_with_distance(points=500, DISTANCE=0.15, Discarded=False, w
         ax.scatter(x_list_discard, y_list_discard, z_list_discard, s=5, c='b', zorder=10)
 
     # If you want to remove the axis
-    #ax.set_axis_off()
+    if not(Axis):
+        ax.set_axis_off()
 
     # Create a random seed to save the image
     random_seed = str(random.random())[2:6]
@@ -114,4 +115,4 @@ def Points_on_sphere_with_distance(points=500, DISTANCE=0.15, Discarded=False, w
 
 # test the code
 if __name__ == "__main__":
-    Points_on_sphere_with_distance(points=3000, DISTANCE=0.25, Discarded=False, wireframe=True, plot_surface=False, Show=True, GIF=True, debug=False)
+    Points_on_sphere_with_distance(points=3000, DISTANCE=0.25, Discarded=False, wireframe=True, plot_surface=False, Axis=True, Show=True, GIF=True, debug=False)

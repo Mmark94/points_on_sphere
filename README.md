@@ -41,3 +41,5 @@ spiral_on_sphere.py
 ![sphere11](media_f/Sphere_points_1000_s4841.png)
 
 ![sphere12](media_f/Sphere_points_10000_s7766.png)
+
+![sphere13](media_f/Sphere_points_1000_s4270.png)

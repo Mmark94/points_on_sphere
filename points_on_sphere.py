@@ -5,7 +5,7 @@ import numpy as np
 import math
 import random
 
-def random_points_on_sphere(points=500, wireframe=True, plot_surface=False, Show=True, GIF=True):
+def random_points_on_sphere(points=500, wireframe=True, plot_surface=False, Axis=True, Show=True, GIF=True):
     # This draws the wireframe of a sphere
     phi = np.linspace(0, np.pi, 20)
     theta = np.linspace(0, 2 * np.pi, 40)
@@ -40,7 +40,8 @@ def random_points_on_sphere(points=500, wireframe=True, plot_surface=False, Show
     ax.scatter(x_list, y_list, z_list, s=30, c='r', zorder=10)
 
     # If you want to remove the axis
-    #ax.set_axis_off()
+    if not(Axis):
+        ax.set_axis_off()
 
     # Create a random seed to save the image
     random_seed = str(random.random())[2:6]
@@ -62,4 +63,4 @@ def random_points_on_sphere(points=500, wireframe=True, plot_surface=False, Show
 # test the code
 if __name__ == "__main__":
 
-    random_points_on_sphere(points=500, wireframe=True, plot_surface=False, Show=True, GIF=False)
+    random_points_on_sphere(points=500, wireframe=True, plot_surface=False, Axis=True, Show=True, GIF=False)
